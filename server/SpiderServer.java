@@ -4,16 +4,19 @@ package server;
 
 import java.io.*;
 import java.net.*;
+import java.util.*;
 
 public class SpiderServer{
-	ServerSocket providerSocket;
-	Socket connection = null;
-	ObjectOutputStream out;
-	ObjectInputStream in;
-	String message;
+	private ServerSocket providerSocket;
+	private Socket connection = null;
+	private ObjectOutputStream out;
+	private ObjectInputStream in;
+	private String name, cognome;
+	private List<Sorgente> socials = new ArrayList<Sorgente>();
 	
 	void run()
 	{
+		socials.add(new FacebookData());
 		try{
 			//1. creating a server socket
 			providerSocket = new ServerSocket(2004, 10);
@@ -27,17 +30,16 @@ public class SpiderServer{
 			in = new ObjectInputStream(connection.getInputStream());
 			sendMessage("Connection successful");
 			//4. The two parts communicate via the input and output streams
-			do{
-				try{
-					message = (String)in.readObject();
-					System.out.println("client>" + message);
-					if (message.equals("bye"))
-						sendMessage("bye");
-				}
-				catch(ClassNotFoundException classnot){
-					System.err.println("Data received in unknown format");
-				}
-			}while(!message.equals("bye"));
+			try{
+				name = (String)in.readObject();
+				cognome = (String)in.readObject();
+				Search();
+				sendMessage("dati");
+				
+			}
+			catch(ClassNotFoundException classnot){
+				System.err.println("Data received in unknown format");
+			}
 		}
 		catch(IOException ioException){
 			ioException.printStackTrace();
@@ -52,6 +54,12 @@ public class SpiderServer{
 			catch(IOException ioException){
 				ioException.printStackTrace();
 			}
+		}
+	}
+	
+	private void Search(){
+		for(Sorgente s : socials){
+			s.FillData(name + " " + cognome);
 		}
 	}
 	
