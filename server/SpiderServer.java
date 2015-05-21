@@ -1,6 +1,6 @@
-//http://zerioh.tripod.com/ressources/sockets.html
-
 package server;
+
+//http://zerioh.tripod.com/ressources/sockets.html
 
 import java.io.*;
 import java.net.*;
@@ -16,7 +16,6 @@ public class SpiderServer{
 	
 	void run()
 	{
-		socials.add(new FacebookData());
 		try{
 			//1. creating a server socket
 			providerSocket = new ServerSocket(2004, 10);
@@ -33,9 +32,8 @@ public class SpiderServer{
 			try{
 				name = (String)in.readObject();
 				cognome = (String)in.readObject();
-				Search();
-				sendMessage("dati");
-				
+				SearchAndSend();
+				sendMessage("bye");
 			}
 			catch(ClassNotFoundException classnot){
 				System.err.println("Data received in unknown format");
@@ -57,21 +55,26 @@ public class SpiderServer{
 		}
 	}
 	
-	private void Search(){
+	private void SearchAndSend(){
 		for(Sorgente s : socials){
 			s.FillData(name + " " + cognome);
+			sendMessage(s.GetData());
 		}
 	}
 	
-	void sendMessage(String msg)
+	void sendMessage(Object msg)
 	{
 		try{
 			out.writeObject(msg);
 			out.flush();
-			System.out.println("server>" + msg);
+			//System.out.println("server>" + msg);
 		}
 		catch(IOException ioException){
 			ioException.printStackTrace();
 		}
+	}
+	
+	public SpiderServer() {
+		socials.add(new FacebookSorgente());
 	}
 }
