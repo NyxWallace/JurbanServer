@@ -1,4 +1,7 @@
 package server;
+
+//Classe creata al solo scopo di effettuare dei test
+
 import com.restfb.*;
 import com.restfb.FacebookClient.AccessToken;
 import com.restfb.types.*;

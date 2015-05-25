@@ -1,13 +1,13 @@
 package server;
 
-//http://zerioh.tripod.com/ressources/sockets.html
+//http://zerioh.tripod.com/ressources/sockets.html			Sito di esempi su come implementare il socket
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
 public class SpiderServer{
-	private ServerSocket providerSocket;
+	private ServerSocket socket;
 	private Socket connection = null;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
@@ -17,23 +17,25 @@ public class SpiderServer{
 	void run()
 	{
 		try{
-			//1. creating a server socket
-			providerSocket = new ServerSocket(2004, 10);
-			//2. Wait for connection
-			System.out.println("Waiting for connection");
-			connection = providerSocket.accept();
-			System.out.println("Connection received from " + connection.getInetAddress().getHostName());
-			//3. get Input and Output streams
+			//Creo il socket sulla porta 2004
+			socket = new ServerSocket(2004);
+			//Resto in attesa della connessione
+			System.out.println("In attesa della connessione");
+			connection = socket.accept();
+			//Log sulla connessione in entrata
+			System.out.println("Connessione ricevuta da " + connection.getInetAddress().getHostName());
+			//Creo gli stream per la comunicazione tra client e server
 			out = new ObjectOutputStream(connection.getOutputStream());
 			out.flush();
 			in = new ObjectInputStream(connection.getInputStream());
-			sendMessage("Connection successful");
-			//4. The two parts communicate via the input and output streams
+			send_message("Connessione riuscita");
 			try{
+				//Mi faccio passare il nome dal client per effettuare la ricerca
 				nome = (String)in.readObject();
 				cognome = (String)in.readObject();
-				SearchAndSend();
-				sendMessage("bye");
+				search_and_send();
+				//Messaggio che segnala al client che la transazione è terminata
+				send_message("bye");
 			}
 			catch(ClassNotFoundException classnot){
 				System.err.println("Data received in unknown format");
@@ -43,11 +45,11 @@ public class SpiderServer{
 			ioException.printStackTrace();
 		}
 		finally{
-			//4: Closing connection
 			try{
+				//Chiudi gli steam e la connessione con il client
 				in.close();
 				out.close();
-				providerSocket.close();
+				socket.close();
 			}
 			catch(IOException ioException){
 				ioException.printStackTrace();
@@ -55,19 +57,20 @@ public class SpiderServer{
 		}
 	}
 	
-	private void SearchAndSend(){
+	private void search_and_send(){
+		//Per ogni sorgente disponibile faccio partire la ricerca dei dati e mi faccio tornare le informazioni
 		for(Sorgente s : socials){
 			s.FillData(nome + " " + cognome);
-			sendMessage(s.GetData());
+			send_message(s.GetData());
 		}
 	}
 	
-	void sendMessage(Object msg)
+	void send_message(Object msg)
+	//Metodo per inviare dati sulla connessione
 	{
 		try{
 			out.writeObject(msg);
 			out.flush();
-			//System.out.println("server>" + msg);
 		}
 		catch(IOException ioException){
 			ioException.printStackTrace();
@@ -75,6 +78,8 @@ public class SpiderServer{
 	}
 	
 	public SpiderServer() {
+		//Aggiungo le varie sorgenti supportate
 		socials.add(new FacebookSorgente());
+		socials.add(new TwitterSorgente());
 	}
 }
