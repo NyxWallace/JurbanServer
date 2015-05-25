@@ -65,7 +65,7 @@ public class SpiderServer{
 		}
 	}
 	
-	void send_message(Object msg)
+	private void send_message(Object msg)
 	//Metodo per inviare dati sulla connessione
 	{
 		try{
