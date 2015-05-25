@@ -7,23 +7,20 @@ package server;
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.FacebookClient;
-import com.restfb.FacebookClient.AccessToken;
+import com.restfb.Parameter;
 import com.restfb.types.Post;
 import com.restfb.types.User;
 
 public class FacebookSorgente extends Sorgente {
-
-	FacebookData data;
+	//Creo il client FB con cui in seguito lavorerò usando il token, l'ID e il secret dell'app
+	private FacebookClient facebookClient = new DefaultFacebookClient(Spider.FB_accessToken, "e6549f56027f674f32b9468786e224ed", com.restfb.Version.VERSION_2_3);
 	
 	@Override
-	void FillData(final String name) {
-		//Ritorna un Token con data di scadenza estesa utilizzando l'attuale token, l'ID e il segreto dell'applicazione
-		AccessToken accessToken =  new DefaultFacebookClient("CAABbeDUDTL4BAA9ZCg6I3t4fzKoZCDDve1M7mnOYqOifwxoZANyyBpcjqSq0wD1XzVp7ZCJDFB73N4EKH6JX2WihCQan2cnwI3DeIu6g1LNsxWtiQyTaCm92b3AvhWgBDeZCwtHFPh71hXewx0YdYHy5ZCGjzaMhD5iQ4R420TcPoVeuyxUWeLsBbM5iNqoMJFxFeCCIwazgxZBjnmyei4b", com.restfb.Version.VERSION_2_3)
-															.obtainExtendedAccessToken("100571843611838", "e6549f56027f674f32b9468786e224ed");
-		//Creo il client FB con cui in seguito lavorerò usando il token
-		FacebookClient facebookClient = new DefaultFacebookClient(accessToken.getAccessToken(), com.restfb.Version.VERSION_2_3);
+	public void FillData(final String name) {
 		//Provo a recuperare dati dal mio profilo
 		User me = facebookClient.fetchObject("me", User.class);
+		//A causa della difficoltà di reperire le informazioni pesonali abbiamo usato me come utente, il metodo seguente ritorna altri utenti in base al nome
+		//User user = search_user(name);
 		Connection<User> myFriends = facebookClient.fetchConnection("me/friends", User.class);
 		Connection<Post> myFeed = facebookClient.fetchConnection("me/feed", Post.class);
 		String nr_amici = ""+myFriends.getData().size();
@@ -33,7 +30,7 @@ public class FacebookSorgente extends Sorgente {
 		else
 			ultimo_post = "I post di questo utente non sono disponibili";
 		//Creo il contenitore dati da inviare al client
-		data = new FacebookData(me.getFirstName(), 
+		dati = new FacebookData(me.getFirstName(), 
 								me.getLastName(), 
 								me.getHometownName(), 
 								me.getBirthday(), 
@@ -43,8 +40,16 @@ public class FacebookSorgente extends Sorgente {
 	}
 
 	@Override
-	FacebookData GetData() {
-		return data;
+	public IData GetData() {
+		return dati;
+	}
+	
+	@SuppressWarnings("unused")
+	private User search_user(String name){
+		Connection<User> publicSearch = facebookClient.fetchConnection("search", User.class, Parameter.with("q", name), Parameter.with("type", "user"));
+		if(publicSearch.getData().size() > 0)
+			return publicSearch.getData().get(0);
+		return null;
 	}
 
 }
