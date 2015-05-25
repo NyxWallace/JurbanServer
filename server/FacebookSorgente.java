@@ -15,13 +15,14 @@ public class FacebookSorgente extends Sorgente {
 	
 	@Override
 	void FillData(final String name) {
-		AccessToken accessToken =  new DefaultFacebookClient(com.restfb.Version.VERSION_2_3).obtainExtendedAccessToken("100571843611838", "e6549f56027f674f32b9468786e224ed");
+		AccessToken accessToken =  new DefaultFacebookClient("CAABbeDUDTL4BAA9ZCg6I3t4fzKoZCDDve1M7mnOYqOifwxoZANyyBpcjqSq0wD1XzVp7ZCJDFB73N4EKH6JX2WihCQan2cnwI3DeIu6g1LNsxWtiQyTaCm92b3AvhWgBDeZCwtHFPh71hXewx0YdYHy5ZCGjzaMhD5iQ4R420TcPoVeuyxUWeLsBbM5iNqoMJFxFeCCIwazgxZBjnmyei4b", com.restfb.Version.VERSION_2_3).obtainExtendedAccessToken("100571843611838", "e6549f56027f674f32b9468786e224ed");
 		FacebookClient facebookClient = new DefaultFacebookClient(accessToken.getAccessToken(), com.restfb.Version.VERSION_2_3);
 		User me = facebookClient.fetchObject("me", User.class);
 		data.Nome = me.getFirstName();
 		data.Cognome = me.getLastName();
 		data.Indirizzo = me.getHometownName();
 		data.Età = me.getBirthday();
+		
 	}
 
 	@Override
