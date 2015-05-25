@@ -25,8 +25,7 @@ public class TwitterSorgente extends Sorgente {
 	}
 
 	@Override
-	FacebookData GetData() {
-		// TODO Auto-generated method stub
+	TwitterData GetData() {
 		return null;
 	}
 

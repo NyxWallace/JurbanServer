@@ -11,7 +11,7 @@ public class SpiderServer{
 	private Socket connection = null;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
-	private String name, cognome;
+	private String nome, cognome;
 	private List<Sorgente> socials = new ArrayList<Sorgente>();
 	
 	void run()
@@ -30,7 +30,7 @@ public class SpiderServer{
 			sendMessage("Connection successful");
 			//4. The two parts communicate via the input and output streams
 			try{
-				name = (String)in.readObject();
+				nome = (String)in.readObject();
 				cognome = (String)in.readObject();
 				SearchAndSend();
 				sendMessage("bye");
@@ -57,7 +57,7 @@ public class SpiderServer{
 	
 	private void SearchAndSend(){
 		for(Sorgente s : socials){
-			s.FillData(name + " " + cognome);
+			s.FillData(nome + " " + cognome);
 			sendMessage(s.GetData());
 		}
 	}
