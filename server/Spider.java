@@ -2,7 +2,7 @@ package server;
 
 public class Spider {
 	
-	public static String FB_accessToken = "CAABbeDUDTL4BANZCKLj8i6RrRPsAhccpdbbVyWVJZAbAzsw8E7ZBXp52BWrRQkFqYbizOXOWCQ3eCMNCd1FJYMArnfMTNMyYK47HJl3Aftxpu4i9XhXTOBa7MLQMLvfrXBIb4yV24oUlDmDA6GUWmdqdHhtC7mtWRqFjcco9SD3ZADdXr4Sssemo20etg9fwfnvtow0knKG5OkI9jldT";
+	public static String FB_accessToken = "CAABbeDUDTL4BAFaIQXGrSduDvECugNTCM4cFXaYQzoeVZBKSgIAebaylcumFpuCWfgKBBHFgxgB02pUf0vvZBEOyeh1qZB71qeTjC54hVXFCDuU63WvDe9tJnBVXlQOHaYVKS6EJI5ZAeZA682q8vnd1wLSe6wGE7jZAg49i6Lm5aYqX4G90CQhsOzB0V53GfQeskWG59j7QHlf8acxBhX";
 	
 	public static void main(String args[])
 	{
